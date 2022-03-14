@@ -1,12 +1,8 @@
-import java.util.Timer;
-
-
 
 
 public class solverAttempt1 {
     private double x; //current x
      private double y; //curent y
-     private double h; // height
      private double xv; //velocity x 
      private double yv; // velocity y
      
@@ -17,8 +13,9 @@ public class solverAttempt1 {
      private double accX; // acceleration x
      private double accY; //acceleration y
      private double [] outputArray;
+     double h= 0.000000001; // very small number for derivation
 
-     //private Timer t1 = new Timer();
+     
 public solverAttempt1( double kineticFriction, double stepSize, double initialX, double initialY,  double initialVX, double inititialVY){
     this.uk = kineticFriction;
     this.stepSize = stepSize;
@@ -27,6 +24,8 @@ public solverAttempt1( double kineticFriction, double stepSize, double initialX,
     
     this.xv= initialVX;
     this.yv = inititialVY;
+    this.accX = 0; 
+    this.accY = 0;
     double [] outputArray  = {x,y,xv,yv};
 
 }
@@ -36,13 +35,12 @@ public solverAttempt1( double kineticFriction, double stepSize, double initialX,
 
     public static void main(String[]args){
         solverAttempt1 solver = new solverAttempt1(0.06, 0.1, 0, 0, 1, 0);
-        
+
 
     }
 
     public  double [] newState(double x, double y, double xv, double yv, double deltaH){
-        double aX = x;
-        double aY = y;
+        
         x = x+ stepSize* xv;
         y = y + stepSize * yv;
         xv= xv + stepSize * accX; //to do: initial acceleration
@@ -51,8 +49,8 @@ public solverAttempt1( double kineticFriction, double stepSize, double initialX,
         this.y = y;
         this.xv = xv;
         this.yv = yv;
-        accX = accelerationX (deltaH, aX-outputArray[0] );
-        accY = accelerationY (deltaH, aY- outputArray[1]);
+        accX = accelerationX (x);
+        accY = accelerationY (y);
         outputArray[0] = x;
         outputArray[1]=y;
         outputArray [2] = xv;
@@ -63,14 +61,31 @@ public solverAttempt1( double kineticFriction, double stepSize, double initialX,
 
     }
 
-    public  double accelerationX ( double deltaH, double deltaX){
-        double accX = (-1)*(deltaH/deltaX) - (uk*g*xv)/Math.sqrt(xv*xv+yv*yv);
+    public  double accelerationX ( double x){
+        double accX = (-1)*g* (derivativeHX(x)) - (uk*g*xv)/Math.sqrt(xv*xv+yv*yv);
         return accX;
     }
 
-    public  double accelerationY (double deltaH, double deltaY){
-        double accY = (-1)*(deltaH/deltaY) - (uk*g*yv)/Math.sqrt(xv*xv+yv*yv);
+    public  double accelerationY (double y){
+        double accY = (-1)*g*(derivativeHY(y)) - (uk*g*yv)/Math.sqrt(xv*xv+yv*yv);
         return accY;
+    }
+
+    public double derivativeHX(double x){
+        
+        return (xHeightFunction(x+h) - xHeightFunction(x))/h;
+
+    }
+    public double derivativeHY(double y){
+        return (yHeightFunction(y+h) - yHeightFunction(y))/h;
+        
+    }
+    public double xHeightFunction (double x){
+        // TO DO: get the function from the input file
+
+    }
+    public double yHeightFunction (double y){
+        // TO DO: get the function from the input file
     }
 
 
